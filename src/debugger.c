@@ -111,7 +111,12 @@ static void cmd_break(debugger_state_t *state) {
     if (sscanf(line, "%lx", &addr) != 1) {
         printf("[!] 无效地址\n");
     } else {
-        bp_set(state, addr);
+        int id = bp_set(state, addr);
+        /* 根据命令表的说明，b 应该在设置断点后继续运行。仅在设置成功时继续。 */
+        if (id > 0) {
+            ptrace(PTRACE_CONT, state->child_pid, NULL, NULL);
+            debugger_wait(state);
+        }
     }
     free(line);
 }
