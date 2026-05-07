@@ -73,6 +73,24 @@ static void cmd_registers(debugger_state_t *state){
     printf("RIP: 0x%016llx  RFLAGS: 0x%016llx\n", regs.rip, regs.eflags);
 }
 
+static void cmd_memory(debugger_state_t *state){
+    char *line = readline("[起始地址]> ");
+    if(line == NULL)return;
+
+    uintptr_t addr;
+
+    if(sscanf(line,"%lx",&addr)!=1){
+        printf("无效地址\n");
+        free(line);
+        return;
+    }
+    free(line);
+
+    for(int row=0;row<10;row++){
+        
+    }
+}
+
 static void cmd_step(debugger_state_t *state) {
     if (ptrace(PTRACE_SINGLESTEP, state->child_pid, NULL, NULL) < 0) {
         perror("单步执行失败");
